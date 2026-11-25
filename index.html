@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #F0DCAE;
+    font-family: Arial, sans-serif;
+    color: #25213A;
+}
+
+/* ANA HEADER */
+
+header {
+    height: 180px;
+    width: 100%;
+    background: #25064D;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header::before {
+    content: "";
+    position: absolute;
+    inset: -80px;
+    background:
+        radial-gradient(ellipse at 15% 80%, rgba(170,70,255,.8), transparent 35%),
+        radial-gradient(ellipse at 45% 30%, rgba(40,220,190,.65), transparent 38%),
+        radial-gradient(ellipse at 75% 80%, rgba(70,120,255,.75), transparent 35%),
+        radial-gradient(ellipse at 90% 20%, rgba(190,80,255,.6), transparent 35%);
+    filter: blur(35px);
+    animation: aurora 9s ease-in-out infinite alternate;
+}
+
+@keyframes aurora {
+    0% {
+        transform: translateX(-35px) translateY(10px) scale(1);
+        filter: blur(35px) hue-rotate(0deg);
+    }
+    50% {
+        transform: translateX(35px) translateY(-15px) scale(1.12);
+        filter: blur(42px) hue-rotate(35deg);
+    }
+    100% {
+        transform: translateX(-15px) translateY(20px) scale(1.05);
+        filter: blur(38px) hue-rotate(-25deg);
+    }
+}
+
+.category {
+    position: absolute;
+    left: 20px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.menu-icon {
+    font-size: 28px;
+}
+
+.logo {
+    position: relative;
+    z-index: 2;
+    color: white;
+    font-size: 32px;
+    letter-spacing: 8px;
+    font-weight: 300;
+}
+
+body.category-mode > header {
+    display: none;
+}
+
+/* MENÜ */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    max-width: 85%;
+    height: 100vh;
+    background: #F0DCAE;
+    z-index: 11;
+    overflow-y: auto;
+    transition: .35s;
+    padding-bottom: 30px;
+    box-shadow: 5px 0 25px rgba(0,0,0,.15);
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.menu-header {
+    background: #460D8F;
+    color: white;
+    padding: 25px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 23px;
+    letter-spacing: 3px;
+}
+
+.close-menu {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.menu-list {
+    padding: 12px;
+}
+
+.menu-item {
+    margin-bottom: 5px;
+}
+
+.menu-button {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: #302044;
+    text-align: left;
+    padding: 15px 12px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.menu-button:hover {
+    background: rgba(70,13,143,.10);
+}
+
+/* ANA SAYFA UZAY VE KUZEY IŞIKLARI */
+
+.home-background {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #F0DCAE;
+    min-height: 650px;
+}
+
+.home-background::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    z-index: 0;
+    pointer-events: none;
+
+    background:
+        radial-gradient(ellipse at 10% 25%, rgba(40,190,160,.25), transparent 38%),
+        radial-gradient(ellipse at 75% 20%, rgba(110,70,190,.22), transparent 40%),
+        radial-gradient(ellipse at 90% 75%, rgba(45,125,210,.20), transparent 38%),
+        radial-gradient(ellipse at 25% 85%, rgba(65,175,145,.22), transparent 40%),
+        radial-gradient(ellipse at 50% 50%, rgba(145,110,195,.12), transparent 55%);
+
+    filter: blur(45px);
+    animation: homeAurora 18s ease-in-out infinite alternate;
+}
+
+.home-background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: .55;
+
+    background-image:
+        radial-gradient(2px 2px at 12% 18%, rgba(70,13,143,.65), transparent),
+        radial-gradient(2px 2px at 32% 62%, rgba(70,13,143,.45), transparent),
+        radial-gradient(2px 2px at 72% 28%, rgba(30,100,130,.55), transparent),
+        radial-gradient(2px 2px at 88% 72%, rgba(70,13,143,.45), transparent),
+        radial-gradient(1.5px 1.5px at 52% 42%, rgba(30,100,130,.5), transparent),
+        radial-gradient(2px 2px at 22% 85%, rgba(70,13,143,.4), transparent),
+        radial-gradient(1.5px 1.5px at 65% 85%, rgba(70,13,143,.5), transparent);
+
+    background-size: 260px 260px;
+    animation: starsTwinkle 7s ease-in-out infinite alternate;
+}
+
+@keyframes homeAurora {
+    0% {
+        transform: translate(-2%, 1%) scale(1);
+        filter: blur(45px) hue-rotate(0deg);
+    }
+
+    50% {
+        transform: translate(2%, -2%) scale(1.08);
+        filter: blur(50px) hue-rotate(15deg);
+    }
+
+    100% {
+        transform: translate(-1%, 2%) scale(1.04);
+        filter: blur(46px) hue-rotate(-10deg);
+    }
+}
+
+@keyframes starsTwinkle {
+    0% { opacity: .25; }
+    50% { opacity: .65; }
+    100% { opacity: .35; }
+}
+
+/* KUTUP YILDIZI */
+
+.north-star {
+    position: absolute;
+    top: 85px;
+    right: 12%;
+    z-index: 1;
+    pointer-events: none;
+    color: rgba(255,255,255,.85);
+    font-size: 48px;
+
+    text-shadow:
+        0 0 8px rgba(255,255,255,.8),
+        0 0 20px rgba(110,170,255,.8),
+        0 0 38px rgba(110,100,220,.6);
+
+    animation: northStarGlow 4s ease-in-out infinite;
+}
+
+@keyframes northStarGlow {
+    0% {
+        opacity: .55;
+        transform: scale(.9) rotate(0deg);
+        text-shadow:
+            0 0 8px rgba(255,255,255,.6),
+            0 0 18px rgba(110,170,255,.5);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.12) rotate(12deg);
+        text-shadow:
+            0 0 12px white,
+            0 0 28px rgba(110,170,255,.9),
+            0 0 45px rgba(110,100,220,.7);
+    }
+
+    100% {
+        opacity: .65;
+        transform: scale(.95) rotate(0deg);
+    }
+}
+
+.home-background > section {
+    position: relative;
+    z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-background::before,
+    .home-background::after,
+    .north-star {
+        animation: none;
+    }
+}
+
+/* ANA SAYFA */
+
+.support {
+    width: 65%;
+    max-width: 360px;
+    height: 65px;
+    margin: 35px auto 45px;
+    border: 1.5px solid #29233E;
+    border-radius: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+.service {
+    width: 88%;
+    max-width: 850px;
+    min-height: 420px;
+    margin: 0 auto 65px;
+    padding: 35px 25px;
+
+    /* Tanıtım kutusunun opaklığı artırıldı */
+    background: rgba(255,255,255,.72);
+
+    border-radius: 28px;
+    box-shadow: 0 8px 22px rgba(70,13,143,.10);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.service::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse at 15% 30%, rgba(70,210,180,.28), transparent 35%),
+        radial-gradient(ellipse at 65% 25%, rgba(130,80,220,.25), transparent 38%),
+        radial-gradient(ellipse at 85% 70%, rgba(50,130,220,.20), transparent 35%),
+        radial-gradient(ellipse at 35% 85%, rgba(80,190,170,.22), transparent 35%);
+    filter: blur(30px);
+    animation: spaceAurora 14s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+.service::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(70,13,143,.35), transparent),
+        radial-gradient(2px 2px at 30% 70%, rgba(70,13,143,.25), transparent),
+        radial-gradient(1.5px 1.5px at 65% 25%, rgba(30,100,130,.35), transparent),
+        radial-gradient(2px 2px at 85% 60%, rgba(70,13,143,.25), transparent),
+        radial-gradient(1.5px 1.5px at 45% 45%, rgba(30,100,130,.25), transparent),
+        radial-gradient(2px 2px at 75% 90%, rgba(70,13,143,.25), transparent);
+    background-size: 220px 220px;
+    pointer-events: none;
+}
+
+@keyframes spaceAurora {
+    0% { transform: translate(-3%, 1%) scale(1); }
+    50% { transform: translate(3%, -2%) scale(1.10); }
+    100% { transform: translate(-1%, 3%) scale(1.04); }
+}
+
+.service h2 {
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    margin-bottom: 35px;
+    position: relative;
+}
+
+.divider {
+    width: 48px;
+    height: 3px;
+    background: #9871C4;
+    margin: 0 auto 35px;
+}
+
+.service p {
+    text-align: center;
+    font-size: 17px;
+    color: #625A66;
+    line-height: 1.9;
+    position: relative;
+}
+
+.home-link {
+    color: #1676D2;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* GENEL SAYFA YAPISI */
+
+.lesson-page {
+    min-height: 100vh;
+    background: #F0DCAE;
+    padding-bottom: 60px;
+    position: relative;
+    isolation: isolate;
+}
+
+/* YARDIM VE DESTEK DIŞINDAKİ SAYFALARIN KUZEY IŞIKLARI */
+
+.lesson-page:not(.support-page)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .30;
+
+    background:
+        radial-gradient(ellipse at 12% 18%, rgba(40,190,160,.65), transparent 42%),
+        radial-gradient(ellipse at 78% 22%, rgba(125,75,205,.60), transparent 43%),
+        radial-gradient(ellipse at 88% 78%, rgba(45,125,210,.55), transparent 40%),
+        radial-gradient(ellipse at 25% 88%, rgba(65,175,145,.60), transparent 42%),
+        radial-gradient(ellipse at 50% 50%, rgba(145,110,195,.35), transparent 55%);
+
+    filter: blur(35px);
+}
+
+/* Sayfa içeriğini arka plan deseninin üzerinde tut */
+.lesson-page > * {
+    position: relative;
+    z-index: 1;
+}
+
+.lesson-header {
+    width: 100%;
+    height: 165px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 25px;
+}
+
+.lesson-header h1 {
+    color: white;
+    font-size: 29px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* SAYFA ÜST KONTROLLERİ */
+
+.page-controls {
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    color: white;
+}
+
+.page-menu {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.page-menu span:first-child {
+    font-size: 25px;
+}
+
+.back-button {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 29px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 5px;
+}
+
+/* RENKLER */
+
+.math-primary .lesson-header { background: #C62828; }
+.math-middle .lesson-header { background: #008F89; }
+.math-high .lesson-header { background: #345B9A; }
+
+.english-a1 .lesson-header { background: #174A7E; }
+.english-b1 .lesson-header { background: #286B83; }
+.english-ydt .lesson-header { background: #293D68; }
+
+.music-guitar .lesson-header { background: #8A4935; }
+.music-electric .lesson-header { background: #4B345E; }
+.music-acoustic .lesson-header { background: #A56B3F; }
+.music-violin .lesson-header { background: #743D32; }
+.music-piano .lesson-header { background: #34343F; }
+
+.art-page .lesson-header { background: #B65D37; }
+.music-exam .lesson-header { background: #713D70; }
+.sports-page .lesson-header { background: #39734B; }
+.teacher-page .lesson-header { background: #52617D; }
+.consulting-page .lesson-header { background: #52617D; }
+.support-page .lesson-header { background: #39734B; }
+.services-page .lesson-header { background: #460D8F; }
+.privacy-page .lesson-header { background: #460D8F; }
+
+/* FOTOĞRAF ALANI */
+
+.lesson-hero {
+    width: 100%;
+    min-height: 590px;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 45px 15px;
+}
+
+.lesson-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(15,15,25,.18);
+}
+
+/* DERS BUTONLARI */
+
+.lesson-options {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+}
+
+.lesson-option {
+    width: 175px;
+    height: 185px;
+    padding: 12px;
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-size: 20px;
+    line-height: 1.5;
+    cursor: pointer;
+    border-radius: 3px;
+    box-shadow: 0 0 12px var(--shadow);
+    transition: .25s;
+}
+
+.lesson-option:hover,
+.lesson-option.active {
+    background: rgba(255,255,255,.9);
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px var(--shadow);
+}
+
+.unavailable-message {
+    position: relative;
+    z-index: 2;
+    max-width: 330px;
+    padding: 25px;
+    text-align: center;
+    background: rgba(255,255,255,.85);
+    border-radius: 10px;
+    color: #460D8F;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* HİZMETLER SAYFASI */
+
+.service-grid {
+    width: 92%;
+    max-width: 950px;
+    margin: 45px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.service-card {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+    border: 4px solid var(--card-color);
+    border-radius: 12px;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 5px 15px var(--card-shadow);
+    transition: .25s;
+    display: flex;
+    align-items: flex-end;
+}
+
+.service-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        var(--card-overlay),
+        rgba(0,0,0,.02) 85%
+    );
+    transition: .25s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 22px var(--card-shadow);
+}
+
+.service-card:hover::before {
+    background: linear-gradient(
+        to top,
+        var(--card-overlay),
+        rgba(0,0,0,.15)
+    );
+}
+
+.service-card span {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 17px 8px;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.4;
+    text-shadow: 0 2px 5px rgba(0,0,0,.6);
+}
+
+/* BİLGİ KUTULARI */
+
+.info-box {
+    width: 88%;
+    max-width: 700px;
+    margin: 55px auto;
+    padding: 30px 25px;
+    background: rgba(255,255,255,.55);
+    border-radius: 15px;
+    color: #625A66;
+    font-size: 18px;
+    line-height: 1.8;
+    text-align: center;
+}
+
+/* DESTEK SAYFASI METİN DÜZENİ */
+
+.support-intro {
+    display: block;
+    width: 100%;
+    margin: 0 auto 25px;
+    text-align: center;
+    line-height: 1.8;
+}
+
+.support-contact {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: left;
+    color: #44334D;
+}
+
+.support-contact p {
+    display: block;
+    margin: 12px 0;
+}
+
+.support-contact a {
+    color: #1676D2;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* DESTEK SAYFASI ARKA PLANI - DEĞİŞTİRİLMEDİ */
+
+.support-page {
+    position: relative;
+    background:
+        linear-gradient(
+            rgba(240,220,174,.76),
+            rgba(240,220,174,.84)
+        ),
+        url("https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1800&q=85")
+        center / cover fixed;
+}
+
+/* GİZLİLİK SAYFASI */
+
+.privacy-text {
+    width: 90%;
+    max-width: 850px;
+    margin: 45px auto;
+    padding: 30px;
+    background: rgba(255,255,255,.55);
+    border-radius: 15px;
+    color: #51465B;
+    font-size: 16px;
+    line-height: 1.9;
+}
+
+.privacy-text h2 {
+    color: #460D8F;
+    font-size: 21px;
+    margin: 20px 0 8px;
+}
+
+.privacy-text p {
+    margin-bottom: 15px;
+}
+
+/* FİYATLANDIRMA */
+
+.price-area {
+    display: none;
+    width: 88%;
+    max-width: 550px;
+    margin: 55px auto 30px;
+}
+
+.price-area.show {
+    display: block;
+    animation: appear .3s ease;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.price-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 400;
+    color: #922F26;
+    margin-bottom: 25px;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 18px;
+    margin-bottom: 12px;
+    border: 1.5px solid var(--accent);
+    color: #44334D;
+    font-size: 16px;
+    background: rgba(255,255,255,.3);
+    cursor: pointer;
+    transition: .2s;
+}
+
+.price-item:hover {
+    background: rgba(255,255,255,.75);
+    transform: translateY(-2px);
+}
+
+.price {
+    font-weight: bold;
+    color: var(--accent);
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* TALEP FORMU */
+
+.request-area {
+    display: none;
+    width: 88%;
+    max-width: 500px;
+    margin: 35px auto;
+    padding: 25px;
+    background: rgba(255,255,255,.35);
+    border: 1.5px solid var(--accent);
+    border-radius: 15px;
+}
+
+.request-area.show {
+    display: block;
+    animation: appear .3s ease;
+}
+
+.request-area h2 {
+    text-align: center;
+    font-size: 23px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    color: #460D8F;
+}
+
+.request-info {
+    text-align: center;
+    font-size: 14px;
+    color: #625A66;
+    margin-bottom: 22px;
+    line-height: 1.6;
+}
+
+.request-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.request-form label {
+    font-size: 14px;
+    color: #44334D;
+}
+
+.request-form input {
+    width: 100%;
+    padding: 14px;
+    margin-top: 7px;
+    border: 1px solid #9871C4;
+    border-radius: 7px;
+    background: rgba(255,255,255,.8);
+    font-size: 15px;
+    outline: none;
+}
+
+.request-form input:focus {
+    border-color: #460D8F;
+}
+
+.submit-request {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #460D8F;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.submit-request:disabled {
+    opacity: .6;
+    cursor: wait;
+}
+
+.form-message {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 12px;
+    line-height: 1.5;
+}
+
+/* TALEP ONAY EKRANI */
+
+.success-message {
+    padding: 35px 20px;
+    text-align: center;
+    color: #286B48;
+    line-height: 1.8;
+}
+
+.success-message .success-icon {
+    display: block;
+    font-size: 48px;
+    margin-bottom: 18px;
+}
+
+.success-message h2 {
+    color: #286B48;
+    font-size: 23px;
+    margin-bottom: 12px;
+}
+
+.success-message p {
+    font-size: 16px;
+}
+
+/* İLETİŞİM */
+
+.contact {
+    width: 82%;
+    margin: 0 auto;
+    display: none;
+    flex-direction: column;
+    gap: 25px;
+    padding-bottom: 70px;
+}
+
+/* Sadece Yardım ve Destek sayfasında göster */
+body.support-mode .contact {
+    display: flex;
+}
+
+.contact a {
+    color: #E85B58;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* MOBİL */
+
+@media(max-width:600px) {
+    .logo {
+        font-size: 30px;
+    }
+
+    .category {
+        left: 15px;
+        font-size: 13px;
+    }
+
+    .north-star {
+        top: 55px;
+        right: 10%;
+        font-size: 38px;
+    }
+
+    .lesson-header {
+        height: 165px;
+    }
+
+    .lesson-header h1 {
+        font-size: 24px;
+    }
+
+    .page-controls {
+        left: 10px;
+        top: 12px;
+        gap: 10px;
+    }
+
+    .page-menu {
+        font-size: 11px;
+    }
+
+    .page-menu span:first-child {
+        font-size: 22px;
+    }
+
+    .back-button {
+        font-size: 25px;
+    }
+
+    .lesson-hero {
+        min-height: 540px;
+        padding: 30px 10px;
+    }
+
+    .lesson-options {
+        gap: 24px;
+    }
+
+    .lesson-option {
+        width: 145px;
+        height: 170px;
+        font-size: 17px;
+    }
+
+    .price-area {
+        width: 92%;
+    }
+
+    .price-item {
+        font-size: 14px;
+        padding: 15px 12px;
+    }
+
+    .request-area {
+        width: 92%;
+        padding: 20px;
+    }
+
+    .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        width: 92%;
+        margin-top: 30px;
+    }
+
+    .service-card {
+        border-width: 3px;
+    }
+
+    .service-card span {
+        font-size: 13px;
+        padding: 12px 5px;
+    }
+
+    .info-box {
+        font-size: 16px;
+        padding: 25px 18px;
+    }
+
+    .service p {
+        font-size: 16px;
+    }
+
+    .privacy-text {
+        padding: 22px 18px;
+        font-size: 15px;
+    }
+
+    .support-page {
+        background-attachment: scroll;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="category" onclick="openMenu()">
+        <span class="menu-icon">☰</span>
+        <span>Kategoriler</span>
+    </div>
+    <div class="logo">NEXUS</div>
+</header>
+
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<nav class="sidebar" id="sidebar">
+
+    <div class="menu-header">
+        <span>KATEGORİLER</span>
+        <button class="close-menu" onclick="closeMenu()">×</button>
+    </div>
+
+    <div class="menu-list">
+
+        <div class="menu-item">
+            <button class="menu-button" onclick="goHome()">Ana Sayfa</button>
+        </div>
+
+        <div class="menu-item">
+            <button class="menu-button" onclick="selectServicesPage()">Hizmetler</button>
+        </div>
+
+        <div class="menu-item">
+            <button class="menu-button" onclick="selectPage('Danışmanlıklar')">Danışmanlıklar</button>
+        </div>
+
+        <div class="menu-item">
+            <button class="menu-button" onclick="selectPage('Spor Dalları')">Spor Dalları</button>
+        </div>
+
+        <div class="menu-item">
+            <button class="menu-button" onclick="selectSupportPage()">Yardım ve Destek</button>
+        </div>
+
+        <div class="menu-item">
+            <button class="menu-button" onclick="selectPrivacyPage()">Gizlilik ve Güvenlik</button>
+        </div>
+
+    </div>
+</nav>
+
+<main id="mainContent">
+
+    <div class="home-background">
+
+        <div class="north-star">✦</div>
+
+        <section class="support">Destek</section>
+
+        <section class="service">
+            <h2>Hizmet</h2>
+            <div class="divider"></div>
+
+            <p>
+                Merhabalar, Nexus ekibi olarak çeşitli alanlarda özel dersleri
+                ve danışmanlıkları piyasa şartlarından daha düşük bir ücret
+                karşılığında sizlerle buluşturuyoruz. Matematik ve İngilizce
+                branşlarındaki özel ders hizmetimiz sizin için uygulamamızda
+                hazırdır. Merak ettiğiniz bir konu olursa Yardım ve Destek
+                bölümünden bize ulaşabilirsiniz.
+                <br><br>
+                Özel ders ve Danışmanlık başvuruları için
+                <a class="home-link" onclick="selectServicesPage()">HİZMETLER</a>
+                bölümüne göz atabilirsiniz.
+            </p>
+        </section>
+
+    </div>
+
+</main>
+
+<footer class="contact">
+    <a href="https://wa.me/905XXXXXXXXX">→ WhatsApp iletişim hattı</a>
+    <a href="https://instagram.com/kullaniciadi">→ Instagram iletişim hattı</a>
+</footer>
+
+<script>
+
+/* EMAILJS AYARLARI */
+
+emailjs.init({
+    publicKey: "77An3H6r1dOZGW8rU"
+});
+
+var EMAIL_SERVICE_ID = "service_cw6vurd";
+var EMAIL_TEMPLATE_ID = "template_yvs7heq";
+
+/* SAYFA GEÇMİŞİ */
+
+var pageHistory = [];
+
+function savePageHistory() {
+    pageHistory.push({
+        html: document.getElementById("mainContent").innerHTML,
+        categoryMode: document.body.classList.contains("category-mode"),
+        supportMode: document.body.classList.contains("support-mode")
+    });
+}
+
+function navigateBack() {
+    if (pageHistory.length === 0) {
+        goHome();
+        return;
+    }
+
+    closeMenu();
+
+    var previousPage = pageHistory.pop();
+
+    document.getElementById("mainContent").innerHTML = previousPage.html;
+
+    document.body.classList.toggle(
+        "category-mode",
+        previousPage.categoryMode
+    );
+
+    document.body.classList.toggle(
+        "support-mode",
+        previousPage.supportMode
+    );
+
+    window.scrollTo(0, 0);
+}
+
+/* SAYFA ÜST KONTROLLERİ */
+
+function pageControls() {
+    return `
+        <div class="page-controls">
+
+            <button class="back-button"
+                onclick="navigateBack()"
+                title="Önceki sayfa">
+                ←
+            </button>
+
+            <div class="page-menu" onclick="openMenu()">
+                <span>☰</span>
+                <span>Kategoriler</span>
+            </div>
+
+        </div>
+    `;
+}
+
+/* MENÜ */
+
+function openMenu() {
+    document.getElementById("sidebar").classList.add("active");
+    document.getElementById("overlay").classList.add("active");
+}
+
+function closeMenu() {
+    document.getElementById("sidebar").classList.remove("active");
+    document.getElementById("overlay").classList.remove("active");
+}
+
+/* ANA SAYFA */
+
+function goHome() {
+    savePageHistory();
+    closeMenu();
+
+    document.body.classList.remove("category-mode");
+    document.body.classList.remove("support-mode");
+
+    document.getElementById("mainContent").innerHTML = `
+        <div class="home-background">
+
+            <div class="north-star">✦</div>
+
+            <section class="support">Destek</section>
+
+            <section class="service">
+                <h2>Hizmet</h2>
+                <div class="divider"></div>
+
+                <p>
+                    Merhabalar, Nexus ekibi olarak çeşitli alanlarda özel dersleri
+                    ve danışmanlıkları piyasa şartlarından daha düşük bir ücret
+                    karşılığında sizlerle buluşturuyoruz. Matematik ve İngilizce
+                    branşlarındaki özel ders hizmetimiz sizin için uygulamamızda
+                    hazırdır. Merak ettiğiniz bir konu olursa Yardım ve Destek
+                    bölümünden bize ulaşabilirsiniz.
+                    <br><br>
+                    Özel ders ve Danışmanlık başvuruları için
+                    <a class="home-link" onclick="selectServicesPage()">HİZMETLER</a>
+                    bölümüne göz atabilirsiniz.
+                </p>
+            </section>
+
+        </div>
+    `;
+
+    window.scrollTo(0, 0);
+}
+
+/* FİYAT VERİLERİ */
+
+var priceData = {
+
+    "İlkokul Matematik Dersleri": {
+        theme: "math-primary",
+        color: "#C62828",
+        shadow: "rgba(198,40,40,.55)",
+        image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1800&q=90",
+        hourly: 400,
+        face: [400, 1100, 1400, 4800, 5800]
+    },
+
+    "Ortaokul Matematik Dersleri": {
+        theme: "math-middle",
+        color: "#008F89",
+        shadow: "rgba(0,143,137,.55)",
+        image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1800&q=90",
+        hourly: 500,
+        face: [500, 1400, 1600, 5000, 6500]
+    },
+
+    "A1-A2 Seviye İngilizce Dersleri": {
+        theme: "english-a1",
+        color: "#174A7E",
+        shadow: "rgba(23,74,126,.55)",
+        image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=1800&q=90",
+        hourly: 300,
+        face: [300, 800, 1000, 3000, 4000]
+    },
+
+    "B1-B2 Seviye İngilizce Dersleri": {
+        theme: "english-b1",
+        color: "#286B83",
+        shadow: "rgba(40,107,131,.55)",
+        image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1800&q=90",
+        hourly: 500,
+        face: [500, 1400, 1600, 5000, 6500]
+    }
+
+};
+
+/* TÜM SAYFALAR */
+
+var lessons = {
+
+    "İlkokul Matematik Dersleri": priceData["İlkokul Matematik Dersleri"],
+
+    "Ortaokul Matematik Dersleri": priceData["Ortaokul Matematik Dersleri"],
+
+    "Lise Matematik Dersleri": {
+        theme: "math-high",
+        color: "#345B9A",
+        shadow: "rgba(52,91,154,.55)",
+        image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Matematik Eğitmenleri": {
+        theme: "teacher-page"
+    },
+
+    "A1-A2 Seviye İngilizce Dersleri": priceData["A1-A2 Seviye İngilizce Dersleri"],
+
+    "B1-B2 Seviye İngilizce Dersleri": priceData["B1-B2 Seviye İngilizce Dersleri"],
+
+    "YDT İngilizce Dersleri": {
+        theme: "english-ydt",
+        color: "#293D68",
+        shadow: "rgba(41,61,104,.55)",
+        image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "İngilizce Eğitmenleri": {
+        theme: "teacher-page"
+    },
+
+    "Klasik Gitar Dersleri": {
+        theme: "music-guitar",
+        color: "#8A4935",
+        shadow: "rgba(138,73,53,.55)",
+        image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Elektro Gitar Dersleri": {
+        theme: "music-electric",
+        color: "#4B345E",
+        shadow: "rgba(75,52,94,.55)",
+        image: "https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Akustik Gitar Dersleri": {
+        theme: "music-acoustic",
+        color: "#A56B3F",
+        shadow: "rgba(165,107,63,.55)",
+        image: "https://images.unsplash.com/photo-1525201548942-d8732f6617a0?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Keman Dersleri": {
+        theme: "music-violin",
+        color: "#743D32",
+        shadow: "rgba(116,61,50,.55)",
+        image: "https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Piyano Dersleri": {
+        theme: "music-piano",
+        color: "#34343F",
+        shadow: "rgba(52,52,63,.55)",
+        image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Müzik Eğitmenleri": {
+        theme: "teacher-page"
+    },
+
+    "Resim Yetenek Sınavı": {
+        theme: "art-page",
+        color: "#B65D37",
+        shadow: "rgba(182,93,55,.55)",
+        image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Müzik Yetenek Sınavı": {
+        theme: "music-exam",
+        color: "#713D70",
+        shadow: "rgba(113,61,112,.55)",
+        image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Spor Dalları": {
+        theme: "sports-page",
+        color: "#39734B",
+        shadow: "rgba(57,115,75,.55)",
+        image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1800&q=90"
+    },
+
+    "Danışmanlıklar": {
+        theme: "consulting-page"
+    }
+
+};
+
+/* HİZMETLER SAYFASI */
+
+function selectServicesPage() {
+    savePageHistory();
+    closeMenu();
+
+    document.body.classList.add("category-mode");
+    document.body.classList.remove("support-mode");
+
+    var serviceNames = [
+        "İlkokul Matematik Dersleri",
+        "Ortaokul Matematik Dersleri",
+        "Lise Matematik Dersleri",
+        "A1-A2 Seviye İngilizce Dersleri",
+        "B1-B2 Seviye İngilizce Dersleri",
+        "YDT İngilizce Dersleri",
+        "Klasik Gitar Dersleri",
+        "Elektro Gitar Dersleri",
+        "Akustik Gitar Dersleri",
+        "Keman Dersleri",
+        "Piyano Dersleri",
+        "Resim Yetenek Sınavı",
+        "Müzik Yetenek Sınavı"
+    ];
+
+    var cards = serviceNames.map(function(name) {
+        var data = lessons[name];
+
+        return `
+            <div class="service-card"
+                onclick="selectPage('${name}')"
+                style="
+                    background-image:url('${data.image}');
+                    --card-color:${data.color};
+                    --card-shadow:${data.shadow};
+                    --card-overlay:${data.color}CC;
+                ">
+                <span>${name}</span>
+            </div>
+        `;
+    }).join("");
+
+    document.getElementById("mainContent").innerHTML = `
+        <section class="lesson-page services-page">
+
+            <div class="lesson-header">
+                ${pageControls()}
+                <h1>Hizmetler</h1>
+            </div>
+
+            <div class="service-grid">
+                ${cards}
+            </div>
+
+        </section>
+    `;
+
+    window.scrollTo(0, 0);
+}
+
+/* YARDIM VE DESTEK SAYFASI */
+
+function selectSupportPage() {
+    savePageHistory();
+    closeMenu();
+
+    document.body.classList.add("category-mode");
+    document.body.classList.add("support-mode");
+
+    document.getElementById("mainContent").innerHTML = `
+        <section class="lesson-page support-page">
+
+            <div class="lesson-header">
+                ${pageControls()}
+                <h1>Yardım ve Destek</h1>
+            </div>
+
+            <div class="info-box">
+
+                <p class="support-intro">
+                    Nexus ekibi destek hattına hoş geldiniz; istek, öneri
+                    ve şikayetlerinizi aşağıdaki platformlardan bize
+                    iletebilirsiniz.
+                </p>
+
+                <div class="support-contact">
+
+                    <p>
+                        <strong>Whatsapp:</strong>
+                        <a href="https://wa.me/905519570533" target="_blank">
+                            05519570533
+                        </a>
+                    </p>
+
+                    <p>
+                        <strong>İnstagram:</strong>
+                        şu an mevcut değil
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+    `;
+
+    window.scrollTo(0, 0);
+}
+
+/* GİZLİLİK VE GÜVENLİK SAYFASI */
+
+function selectPrivacyPage() {
+    savePageHistory();
+    closeMenu();
+
+    document.body.classList.add("category-mode");
+    document.body.classList.remove("support-mode");
+
+    document.getElementById("mainContent").innerHTML = `
+        <section class="lesson-page privacy-page">
+
+            <div class="lesson-header">
+                ${pageControls()}
+                <h1>Gizlilik ve Güvenlik</h1>
+            </div>
+
+            <div class="privacy-text">
+
+                <h2>Kişisel Verilerin Gizliliği</h2>
+
+                <p>
+                    NEXUS olarak kullanıcılarımızın kişisel verilerinin
+                    gizliliğine ve güvenliğine önem veriyoruz.
+                    Hizmet başvuruları sırasında paylaştığınız ad, soyad,
+                    telefon numarası ve adres bilgileri yalnızca başvurunuzun
+                    değerlendirilmesi ve talep ettiğiniz hizmetin
+                    yürütülmesi amacıyla kullanılmaktadır.
+                </p>
+
+                <h2>Bilgilerinizin Korunması</h2>
+
+                <p>
+                    Tarafımıza ilettiğiniz kişisel bilgiler reklam,
+                    tanıtım veya farklı ticari amaçlarla üçüncü kişilerle
+                    paylaşılmaz ve kamuya açık hâle getirilmez.
+                    Bilgilerinize yalnızca başvurunuzun yürütülmesi için
+                    yetkili kişiler erişebilir.
+                </p>
+
+                <h2>Verilerin Kullanım Amacı</h2>
+
+                <p>
+                    Paylaştığınız bilgiler; hizmet talebinizi almak,
+                    sizinle iletişime geçmek, ders veya danışmanlık
+                    başvurunuzu değerlendirmek amacıyla işlenir.
+                    Bu amaçlar dışında kullanılmaz.
+                </p>
+
+                <h2>Veri Güvenliği</h2>
+
+                <p>
+                    NEXUS, kullanıcı bilgilerinin yetkisiz erişime,
+                    kayba veya kötüye kullanıma karşı korunması için
+                    gerekli özeni göstermeyi amaçlar.
+                </p>
+
+                <h2>Yasal Haklarınız</h2>
+
+                <p>
+                    6698 sayılı Kişisel Verilerin Korunması Kanunu
+                    kapsamında kişisel verilerinizin işlenmesine ilişkin
+                    bilgi talep etme, verilerinizin düzeltilmesini veya
+                    silinmesini isteme gibi yasal haklarınız bulunmaktadır.
+                </p>
+
+                <p>
+                    Kişisel verileriniz, yalnızca mevzuatın gerektirdiği
+                    hâller veya hizmetin yürütülmesi için zorunlu durumlar
+                    kapsamında ilgili yetkili taraflarla paylaşılabilir.
+                </p>
+
+            </div>
+
+        </section>
+    `;
+
+    window.scrollTo(0, 0);
+}
+
+/* SAYFA SEÇİMİ */
+
+function selectPage(name) {
+    savePageHistory();
+    closeMenu();
+
+    var data = lessons[name];
+
+    if (!data) return;
+
+    document.body.classList.add("category-mode");
+    document.body.classList.remove("support-mode");
+
+    showLessonPage(name, data);
+
+    window.scrollTo(0, 0);
+}
+
+/* KATEGORİ SAYFALARINI OLUŞTUR */
+
+function showLessonPage(name, data) {
+
+    var isTeacher = name.includes("Eğitmenleri");
+    var hasPricing = !!priceData[name];
+
+    if (isTeacher) {
+        document.getElementById("mainContent").innerHTML = `
+            <section class="lesson-page teacher-page">
+
+                <div class="lesson-header">
+                    ${pageControls()}
+                    <h1>${name}</h1>
+                </div>
+
+            </section>
+        `;
+
+        return;
+    }
+
+    if (name === "Danışmanlıklar") {
+        document.getElementById("mainContent").innerHTML = `
+            <section class="lesson-page consulting-page">
+
+                <div class="lesson-header">
+                    ${pageControls()}
+                    <h1>Danışmanlıklar</h1>
+                </div>
+
+                <div class="lesson-hero">
+                    <div class="unavailable-message">
+                        Bu ders için henüz eğitmen bulunmamaktadır.
+                        <br><br>
+                        Eğitmen kaydı açıldığında burada yer alacaktır.
+                    </div>
+                </div>
+
+            </section>
+        `;
+
+        return;
+    }
+
+    document.getElementById("mainContent").innerHTML = `
+        <section class="lesson-page ${data.theme}"
+            style="--accent:${data.color || '#460D8F'}; --shadow:${data.shadow || 'rgba(70,13,143,.4)'};">
+
+            <div class="lesson-header">
+
+                ${pageControls()}
+
+                <h1>${name}</h1>
+
+            </div>
+
+            <div class="lesson-hero"
+                style="background-image:url('${data.image}');">
+
+                ${hasPricing ? `
+                    <div class="lesson-options">
+
+                        <button class="lesson-option"
+                            onclick="showPricing('face', this)">
+                            Yüz Yüze<br>Dersler
+                        </button>
+
+                        <button class="lesson-option"
+                            onclick="showPricing('online', this)">
+                            Online<br>Dersler
+                        </button>
+
+                    </div>
+                ` : `
+                    <div class="unavailable-message">
+                        Bu ders için henüz eğitmen bulunmamaktadır.
+                        <br><br>
+                        Eğitmen kaydı açıldığında burada yer alacaktır.
+                    </div>
+                `}
+
+            </div>
+
+            ${hasPricing ? `
+
+                <div class="price-area" id="priceArea">
+
+                    <h2 class="price-title" id="priceTitle"></h2>
+
+                    <div id="priceList"></div>
+
+                </div>
+
+                <div class="request-area" id="requestArea">
+
+                    <h2>Hizmet Talep Formu</h2>
+
+                    <p class="request-info" id="requestInfo">
+                        Seçtiğiniz hizmet için iletişim bilgilerinizi girin.
+                    </p>
+
+                    <form class="request-form" id="requestForm"
+                        onsubmit="sendRequest(event)">
+
+                        <label>
+                            Ad Soyad
+                            <input type="text" id="customerName"
+                                placeholder="Adınız ve soyadınız"
+                                required>
+                        </label>
+
+                        <label>
+                            Telefon Numarası
+                            <input type="tel" id="customerPhone"
+                                placeholder="05XX XXX XX XX"
+                                required>
+                        </label>
+
+                        <label id="addressLabel">
+                            Adres
+                            <input type="text" id="customerAddress"
+                                placeholder="Dersin yapılacağı adres">
+                        </label>
+
+                        <button type="submit" class="submit-request"
+                            id="submitButton">
+                            Talep Gönder
+                        </button>
+
+                        <p class="form-message" id="formMessage"></p>
+
+                    </form>
+
+                </div>
+
+            ` : ""}
+
+        </section>
+    `;
+}
+
+/* FİYATLANDIRMA */
+
+var selectedLesson = "";
+var selectedType = "";
+var selectedPackage = "";
+var selectedPrice = "";
+
+var packageNames = [
+    "Saatlik ders fiyatı",
+    "Haftalık 3 ders fiyatı",
+    "Haftalık 4 ders fiyatı",
+    "Aylık 12 ders fiyatı",
+    "Aylık 16 ders fiyatı"
+];
+
+var packageCounts = [1, 3, 4, 12, 16];
+
+function showPricing(type, button) {
+
+    document.querySelectorAll(".lesson-option").forEach(function(item) {
+        item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    selectedType = type === "face" ? "Yüz Yüze" : "Online";
+
+    selectedLesson = document.querySelector(".lesson-header h1").innerText;
+
+    var data = priceData[selectedLesson];
+
+    if (!data) return;
+
+    var area = document.getElementById("priceArea");
+    var title = document.getElementById("priceTitle");
+    var list = document.getElementById("priceList");
+
+    document.getElementById("requestArea").classList.remove("show");
+
+    area.classList.add("show");
+
+    title.innerText = selectedType + " Ders Fiyatları";
+
+    var prices;
+
+    if (type === "face") {
+        prices = data.face;
+    } else {
+        var onlineHourly = data.hourly - 100;
+
+        prices = packageCounts.map(function(count) {
+            return onlineHourly * count;
+        });
+    }
+
+    list.innerHTML = packageNames.map(function(packageName, index) {
+
+        return `
+            <div class="price-item"
+                onclick="selectPackage(${index})">
+
+                <span>${packageName}</span>
+
+                <span class="price">
+                    ${prices[index].toLocaleString("tr-TR")} TL →
+                </span>
+
+            </div>
+        `;
+
+    }).join("");
+
+    area.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+/* PAKET SEÇİMİ */
+
+function selectPackage(index) {
+
+    selectedPackage = packageNames[index];
+
+    var data = priceData[selectedLesson];
+
+    if (selectedType === "Yüz Yüze") {
+        selectedPrice = data.face[index];
+    } else {
+        selectedPrice = (data.hourly - 100) * packageCounts[index];
+    }
+
+    selectedPrice = selectedPrice.toLocaleString("tr-TR") + " TL";
+
+    var requestArea = document.getElementById("requestArea");
+    var addressLabel = document.getElementById("addressLabel");
+    var addressInput = document.getElementById("customerAddress");
+
+    requestArea.classList.add("show");
+
+    if (selectedType === "Yüz Yüze") {
+        addressLabel.style.display = "block";
+        addressInput.required = true;
+    } else {
+        addressLabel.style.display = "none";
+        addressInput.required = false;
+        addressInput.value = "";
+    }
+
+    document.getElementById("requestInfo").innerText =
+        selectedLesson + " / " + selectedType +
+        " / " + selectedPackage +
+        " / " + selectedPrice;
+
+    document.getElementById("formMessage").innerText = "";
+
+    requestArea.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+/* TALEBİ GÖNDER */
+
+function sendRequest(event) {
+
+    event.preventDefault();
+
+    var name = document.getElementById("customerName").value.trim();
+    var phone = document.getElementById("customerPhone").value.trim();
+    var address = document.getElementById("customerAddress").value.trim();
+
+    var message = document.getElementById("formMessage");
+    var button = document.getElementById("submitButton");
+
+    if (!name || !phone) {
+        message.style.color = "red";
+        message.innerText = "Lütfen zorunlu alanları doldurun.";
+        return;
+    }
+
+    if (selectedType === "Yüz Yüze" && !address) {
+        message.style.color = "red";
+        message.innerText = "Yüz yüze ders için adres girmelisiniz.";
+        return;
+    }
+
+    button.disabled = true;
+    button.innerText = "Gönderiliyor...";
+
+    var templateParams = {
+        talep_turu: selectedType,
+        isim_soyisim: name,
+        telefon: phone,
+        adres: selectedType === "Yüz Yüze" ? address : "Online ders",
+        ders: selectedLesson,
+        paket: selectedPackage,
+        ucret: selectedPrice
+    };
+
+    emailjs.send(
+        EMAIL_SERVICE_ID,
+        EMAIL_TEMPLATE_ID,
+        templateParams
+    )
+    .then(function(response) {
+
+        var requestArea = document.getElementById("requestArea");
+
+        requestArea.innerHTML = `
+            <div class="success-message">
+
+                <span class="success-icon">✓</span>
+
+                <h2>Talebiniz onaylanmıştır.</h2>
+
+                <p>
+                    En yakın zamanda sizinle iletişime geçeceğiz.
+                </p>
+
+            </div>
+        `;
+
+        requestArea.classList.add("show");
+
+        requestArea.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    })
+    .catch(function(error) {
+
+        console.error("EmailJS hatası:", error);
+
+        message.style.color = "red";
+        message.innerText =
+            "Talep gönderilemedi. Lütfen tekrar deneyin.";
+
+        button.disabled = false;
+        button.innerText = "Tekrar Dene";
+
+    });
+}
+
+</script>
+
+</body>
+</html>
